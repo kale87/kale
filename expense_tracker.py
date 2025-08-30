@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import ttk, messagebox
 
 expenses = []
 
@@ -32,24 +32,31 @@ def clear_expenses():
         expenses.clear()
         update_list()
 
+# Main window
 root = tk.Tk()
 root.title("💰 Vladimir's Expense Tracker")
-root.geometry("400x600")
+root.geometry("600x600")
+root.minsize(500, 500)
 root.configure(bg="#f0f4f8")
 
-# Input fields
-tk.Label(root, text="Description", font=("Helvetica", 12), bg="#f0f4f8").pack(pady=(20, 5))
-desc_entry = tk.Entry(root, font=("Helvetica", 12), width=30)
-desc_entry.pack(pady=5)
+# Grid configuration
+root.columnconfigure(0, weight=1)
+root.columnconfigure(1, weight=2)
 
-tk.Label(root, text="Amount", font=("Helvetica", 12), bg="#f0f4f8").pack(pady=(10, 5))
-amount_entry = tk.Entry(root, font=("Helvetica", 12), width=30)
-amount_entry.pack(pady=5)
+# Description input
+tk.Label(root, text="Description", font=("Helvetica", 12), bg="#f0f4f8").grid(row=0, column=0, padx=10, pady=10, sticky="e")
+desc_entry = ttk.Entry(root, font=("Helvetica", 12))
+desc_entry.grid(row=0, column=1, padx=10, pady=10, sticky="we")
+
+# Amount input
+tk.Label(root, text="Amount", font=("Helvetica", 12), bg="#f0f4f8").grid(row=1, column=0, padx=10, pady=10, sticky="e")
+amount_entry = ttk.Entry(root, font=("Helvetica", 12))
+amount_entry.grid(row=1, column=1, padx=10, pady=10, sticky="we")
 
 # Category buttons
-tk.Label(root, text="Choose Category", font=("Helvetica", 12), bg="#f0f4f8").pack(pady=(15, 5))
+tk.Label(root, text="Choose Category", font=("Helvetica", 12), bg="#f0f4f8").grid(row=2, column=0, columnspan=2, pady=(10, 0))
 btn_frame = tk.Frame(root, bg="#f0f4f8")
-btn_frame.pack()
+btn_frame.grid(row=3, column=0, columnspan=2, pady=5)
 
 categories = [
     ("🍔 Food", "#FFB74D"),
@@ -59,19 +66,24 @@ categories = [
     ("🧾 Other", "#E57373")
 ]
 
-for cat, color in categories:
-    tk.Button(btn_frame, text=cat, font=("Helvetica", 11, "bold"), bg=color, fg="white",
-              command=lambda c=cat: add_expense(c)).pack(side="left", padx=5, pady=5)
+for i, (cat, color) in enumerate(categories):
+    btn = tk.Button(btn_frame, text=cat, font=("Helvetica", 11, "bold"), bg=color, fg="white",
+                    command=lambda c=cat: add_expense(c))
+    btn.grid(row=0, column=i, padx=5, ipadx=10)
 
 # Expense list
-listbox = tk.Listbox(root, width=45, height=10, font=("Courier", 11))
-listbox.pack(pady=10)
+listbox = tk.Listbox(root, font=("Courier", 11), height=10)
+listbox.grid(row=4, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
-# Total and Clear button
+# Make listbox expand with window
+root.rowconfigure(4, weight=1)
+
+# Total label
 total_label = tk.Label(root, text="Total Spent: $0.00", font=("Helvetica", 14, "bold"), bg="#f0f4f8", fg="#333")
-total_label.pack(pady=10)
+total_label.grid(row=5, column=0, columnspan=2, pady=10)
 
+# Clear button
 tk.Button(root, text="🗑️ Clear All", font=("Helvetica", 11, "bold"), bg="#f44336", fg="white",
-          command=clear_expenses).pack(pady=10)
+          command=clear_expenses).grid(row=6, column=0, columnspan=2, pady=10)
 
 root.mainloop()
